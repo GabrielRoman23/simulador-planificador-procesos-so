@@ -1,0 +1,329 @@
+/* =========================================
+   1. VARIABLES Y RESETEO BASE
+   ========================================= */
+:root {
+    --bg-main: #0f172a; /* Fondo oscuro moderno */
+    --bg-panel: #1e293b;
+    --text-main: #f8fafc;
+    --text-muted: #94a3b8;
+    
+    /* Colores semánticos para los estados de los procesos */
+    --color-nuevo: #8b5cf6;     /* Morado */
+    --color-listo: #3b82f6;     /* Azul */
+    --color-cpu: #10b981;       /* Verde Brillante */
+    --color-bloqueado: #ef4444; /* Rojo */
+    --color-terminado: #64748b; /* Gris */
+    --color-inanicion: #991b1b;
+    
+    --border-radius: 8px;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', system-ui, sans-serif;
+}
+
+body {
+    background-color: var(--bg-main);
+    color: var(--text-main);
+    padding: 20px;
+}
+
+/* =========================================
+   2. CABECERA Y CONFIGURACIÓN
+   ========================================= */
+header {
+    background-color: var(--bg-panel);
+    padding: 20px;
+    border-radius: var(--border-radius);
+    margin-bottom: 20px;
+    border-left: 5px solid var(--color-nuevo);
+}
+
+header h1 {
+    font-size: 1.5rem;
+    margin-bottom: 15px;
+}
+
+#panel-configuracion {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+select, button {
+    padding: 8px 12px;
+    border-radius: 4px;
+    border: 1px solid var(--text-muted);
+    background-color: var(--bg-main);
+    color: var(--text-main);
+    cursor: pointer;
+}
+
+button#btn-iniciar {
+    background-color: var(--color-cpu);
+    color: #000;
+    font-weight: bold;
+    border: none;
+    transition: transform 0.2s;
+}
+
+button#btn-iniciar:hover {
+    transform: scale(1.05);
+}
+
+/* =========================================
+   3. ÁREA DEL SIMULADOR (GRID PRINCIPAL)
+   ========================================= */
+#simulador-monitor {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+#panel-superior {
+    display: flex;
+    justify-content: space-between;
+    background-color: var(--bg-panel);
+    padding: 15px 20px;
+    border-radius: var(--border-radius);
+    font-family: monospace;
+    color: var(--color-cpu);
+    border: 1px solid #334155;
+}
+
+/* --- Diagrama de Gantt --- */
+#gantt-container {
+    background-color: var(--bg-panel);
+    padding: 15px;
+    border-radius: var(--border-radius);
+    border: 1px solid #334155;
+}
+
+#gantt-timeline {
+    display: flex;
+    height: 40px;
+    background-color: #0f172a;
+    border-radius: 4px;
+    overflow-x: auto; /* Scroll horizontal si se hace muy largo */
+    margin-top: 10px;
+    border: 1px solid #334155;
+}
+
+.gantt-block {
+    flex: 0 0 30px; /* Ancho fijo por cada unidad de tiempo */
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8rem;
+    font-weight: bold;
+    color: white;
+    border-right: 1px solid rgba(0,0,0,0.2);
+}
+.gantt-block.vacio { background-color: #334155; color: transparent; }
+
+/* --- Layout de Tabla y Consola --- */
+.monitor-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 20px;
+}
+
+/* --- Tabla PCB --- */
+#tabla-procesos {
+    background-color: var(--bg-panel);
+    padding: 15px;
+    border-radius: var(--border-radius);
+    border: 1px solid #334155;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+}
+
+th, td {
+    padding: 10px;
+    text-align: left;
+    border-bottom: 1px solid #334155;
+}
+
+th {
+    background-color: #0f172a;
+    color: var(--text-muted);
+    font-weight: 600;
+}
+
+/* Indicadores de estado en la tabla */
+.estado-Listo { color: var(--color-listo); font-weight: bold; }
+.estado-Bloqueado { color: var(--color-bloqueado); font-weight: bold; }
+.estado-EnCPU { color: var(--color-cpu); font-weight: bold; }
+.estado-Terminado { color: var(--text-muted); }
+.estado-Muerto { color: var(--color-inanicion); font-weight: bold; text-decoration: line-through; }
+
+/* --- Consola Terminal --- */
+#consola-eventos {
+    background-color: #000;
+    padding: 15px;
+    border-radius: var(--border-radius);
+    border: 1px solid #334155;
+}
+
+.terminal-log {
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 0.85rem;
+    color: #10b981; /* Verde terminal */
+    height: 300px;
+    overflow-y: auto;
+    margin-top: 10px;
+}
+
+.terminal-log div { margin-bottom: 4px; }
+.terminal-log .alerta-inanicion { color: var(--color-inanicion); }
+
+/* =========================================
+   4. PANELES DE ESTADO (LAS COLAS)
+   ========================================= */
+.contenedor-colas {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* 3 columnas iguales */
+    gap: 15px;
+}
+
+.panel-estado {
+    background-color: var(--bg-panel);
+    border-radius: var(--border-radius);
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    min-height: 250px;
+}
+
+.panel-estado h3 {
+    text-align: center;
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid var(--text-muted);
+}
+
+/* Bordes superiores de color según el estado */
+#cola-nuevos { border-top: 4px solid var(--color-nuevo); }
+#cola-listos { border-top: 4px solid var(--color-listo); }
+#cpu { border-top: 4px solid var(--color-cpu); box-shadow: 0 0 15px rgba(16, 185, 129, 0.2); }
+#cola-bloqueados { border-top: 4px solid var(--color-bloqueado); }
+#cola-terminados { border-top: 4px solid var(--color-terminado); }
+
+/* Área donde caerán las tarjetas con Flexbox */
+.lista-procesos {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    flex-grow: 1;
+    overflow-y: auto;
+}
+
+/* =========================================
+   5. DISEÑO DEL "PCB" (TARJETA DE PROCESO)
+   ========================================= */
+/* Esta clase la crearemos dinámicamente desde JavaScript */
+.proceso-card {
+    background-color: #334155;
+    border-radius: 6px;
+    padding: 10px;
+    font-size: 0.9rem;
+    border-left: 4px solid transparent;
+    transition: all 0.3s ease; /* Animación suave al cambiar de cola */
+    animation: fadeIn 0.4s ease-out;
+}
+
+.proceso-card strong {
+    display: block;
+    margin-bottom: 5px;
+    font-size: 1rem;
+}
+
+.proceso-card .detalle {
+    display: flex;
+    justify-content: space-between;
+    font-family: monospace;
+}
+
+/* =========================================
+   6. LOG DE EVENTOS (LATERAL)
+   ========================================= */
+#log-eventos {
+    background-color: var(--bg-panel);
+    border-radius: var(--border-radius);
+    padding: 15px;
+    max-height: 600px;
+    overflow-y: auto;
+}
+
+#lista-logs {
+    list-style-type: none;
+}
+
+#lista-logs li {
+    font-family: monospace;
+    font-size: 0.85rem;
+    margin-bottom: 8px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #334155;
+}
+
+#lista-logs li.alerta-inanicion {
+    color: var(--color-bloqueado);
+    font-weight: bold;
+}
+
+
+
+
+/* Animación básica de entrada */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+
+
+/* =========================================
+   7. CONTROLES DE REPRODUCCIÓN
+   ========================================= */
+.panel-controles {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    background-color: var(--bg-panel);
+    padding: 15px;
+    border-radius: var(--border-radius);
+    border: 1px solid #334155;
+}
+
+.panel-controles button {
+    background-color: #3b82f6;
+    color: white;
+    font-size: 1rem;
+    font-weight: bold;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 6px;
+    transition: background 0.2s;
+}
+
+.panel-controles button:hover:not(:disabled) {
+    background-color: #2563eb;
+    transform: scale(1.05);
+}
+
+.panel-controles button:disabled {
+    background-color: #475569;
+    color: #94a3b8;
+    cursor: not-allowed;
+    opacity: 0.7;
+}

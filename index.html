@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulador de Planificador de Procesos</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+
+<body>
+
+    <header>
+        <h1>Simulador del Planificador de Procesos</h1>
+        <div id="panel-configuracion">
+            <label for="tipo-planificacion">Tipo:</label>
+            <select id="tipo-planificacion">
+                <option value="apropiativo">Apropiativo (Quantum 2-5)</option>
+                <option value="no-apropiativo">No Apropiativo</option>
+            </select>
+
+            <label for="algoritmo">Algoritmo:</label>
+            <select id="algoritmo">
+                <option value="rr">Round Robin</option>
+                <option value="sjf">SJF (Más corto primero)</option>
+                <option value="prioridades">Prioridades</option>
+                <option value="loteria">Boletos de Lotería</option>
+                <option value="equitativa">Participación Equitativa</option>
+            </select>
+
+            <button id="btn-iniciar">Iniciar Simulación</button>
+        </div>
+    </header>
+
+    <main id="simulador-monitor">
+        <div id="panel-superior">
+            <h2>Reloj Global: <span id="reloj">0</span> u.</h2>
+            <h2>Tiempo Máx: <span id="tiempo-maximo">-</span> u.</h2>
+            <h2>Quantum Actual: <span id="quantum-display">-</span></h2>
+        </div>
+
+        <div class="panel-controles">
+            <button id="btn-anterior" disabled>⏮ Paso Anterior</button>
+            <button id="btn-play-pause" disabled>⏸ Pausar</button>
+            <button id="btn-siguiente" disabled>⏭ Siguiente Paso</button>
+        </div>
+
+        <section id="gantt-container">
+            <h3>Línea de Tiempo de Ejecución (CPU)</h3>
+            <div id="gantt-timeline">
+            </div>
+        </section>
+
+        <div class="monitor-grid">
+            <section id="tabla-procesos">
+                <h3>Tabla de Control de Procesos (PCB)</h3>
+                <table id="pcb-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Estado</th>
+                            <th>T. Restante</th>
+                            <th>Prioridad</th>
+                            <th>Boletos</th>
+                            <th>Usuario</th>
+                        </tr>
+                    </thead>
+                    <tbody id="pcb-body">
+                    </tbody>
+                </table>
+            </section>
+
+            <aside id="consola-eventos">
+                <h3>Consola del Sistema</h3>
+                <div id="lista-logs" class="terminal-log">
+                    <div>> Sistema inicializado...</div>
+                </div>
+            </aside>
+        </div>
+    </main>
+
+    <section id="reporte-final" style="display: none;">
+        <h2>Informe Final de Simulación</h2>
+        <div id="datos-reporte">
+        </div>
+    </section>
+
+    <script src="js/Proceso.js"></script>
+    <script src="js/Algoritmos/AlgoritmoBase.js"></script>
+    <script src="js/Algoritmos/RoundRobin.js"></script>
+    <script src="js/Algoritmos/ParticipacionEquitativa.js"></script>
+    <script src="js/Simulador.js"></script>
+    <script src="js/main.js"></script>
+</body>
+
+</html>
