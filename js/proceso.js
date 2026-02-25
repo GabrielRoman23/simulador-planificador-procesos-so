@@ -1,5 +1,3 @@
-// js/Proceso.js
-
 class Proceso {
     constructor(id) {
         this.id = id;
@@ -13,7 +11,7 @@ class Proceso {
         this.estado = estadoAleatorio === 1 ? "Listo" : "Bloqueado";
         
         // Requisito: Prioridades, boletos, usuarios, etc.
-        this.prioridad = Math.floor(Math.random() * 5) + 1; // Prioridad 1 (alta) a 5 (baja)
+        this.prioridad = Math.floor(Math.random() * 5) + 1; // Prioridad 5 (alta) a 1 (baja)
         this.boletos = Math.floor(Math.random() * 10) + 1; // Para Lotería (1 a 10 boletos)
         this.usuario = `Usuario_${Math.floor(Math.random() * 3) + 1}`; // Para Participación Equitativa
         
@@ -63,7 +61,7 @@ class Proceso {
         const tr = document.createElement("tr"); // Ahora es una fila de tabla
         tr.id = `ui-proceso-${this.id}`;
         
-        this.elementoDOM = tr; // Importante asignar esto primero
+        this.elementoDOM = tr; 
         this.actualizarUI(tr);
         return tr;
     }

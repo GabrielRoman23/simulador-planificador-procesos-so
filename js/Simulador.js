@@ -1,5 +1,3 @@
-// js/Simulador.js
-
 class Simulador {
     constructor(algoritmo, esApropiativo) {
         this.algoritmo = algoritmo;

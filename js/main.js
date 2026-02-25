@@ -63,6 +63,18 @@ document.addEventListener("DOMContentLoaded", () => {
       case "equitativa":
         algoritmoSeleccionado = new ParticipacionEquitativa(esApropiativo);
         break;
+      case "sjf":
+        algoritmoSeleccionado = new AlgoritmoSJF(esApropiativo);
+        break;
+      case "prioridades":
+        algoritmoSeleccionado = new AlgoritmoPrioridad(esApropiativo);
+        break;
+      case "loteria":
+        algoritmoSeleccionado = new Loteria(esApropiativo);
+        break;
+        case "multiples-colas":
+          algoritmoSeleccionado = new MultiplesColas(esApropiativo);
+          break;  
       default:
         alert("Este algoritmo aún no ha sido implementado por el equipo.");
         return;
