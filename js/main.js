@@ -1,4 +1,5 @@
 document.addEventListener("DOMContentLoaded", () => {
+  hacerTablaOrdenable();
   const btnIniciar = document.getElementById("btn-iniciar");
 
   const btnPlayPause = document.getElementById("btn-play-pause");
@@ -72,9 +73,9 @@ document.addEventListener("DOMContentLoaded", () => {
       case "loteria":
         algoritmoSeleccionado = new Loteria(esApropiativo);
         break;
-        case "multiples-colas":
-          algoritmoSeleccionado = new MultiplesColas(esApropiativo);
-          break;  
+      case "multiples-colas":
+        algoritmoSeleccionado = new MultiplesColas(esApropiativo);
+        break;
       default:
         alert("Este algoritmo aún no ha sido implementado por el equipo.");
         return;
@@ -115,7 +116,66 @@ function limpiarInterfaz() {
   document.getElementById("quantum-display").textContent = "-";
 }
 
+// Función para hacer la tabla ordenable visualmente
+function hacerTablaOrdenable() {
+  const headers = document.querySelectorAll("#pcb-table th");
+  const tbody = document.getElementById("pcb-body");
 
+  let columnaActiva = -1;
+  let ordenAscendente = true;
 
+  headers.forEach((header, index) => {
+    header.addEventListener("click", () => {
+      // 1. Alternar dirección si es la misma columna, o reiniciar si es nueva
+      if (columnaActiva === index) {
+        ordenAscendente = !ordenAscendente;
+      } else {
+        ordenAscendente = true;
+        columnaActiva = index;
+      }
 
+      // 2. Actualizar las flechitas visuales en los encabezados
+      headers.forEach(
+        (h) =>
+          (h.textContent = h.textContent.replace(" ▲", "").replace(" ▼", "")),
+      );
+      header.textContent += ordenAscendente ? " ▲" : " ▼";
 
+      // 3. Obtener todas las filas actuales de la tabla y convertirlas a un Arreglo
+      const filas = Array.from(tbody.querySelectorAll("tr"));
+
+      // 4. Ordenar el arreglo de filas
+      filas.sort((filaA, filaB) => {
+        let valA = filaA.cells[index].innerText.trim();
+        let valB = filaB.cells[index].innerText.trim();
+
+        // Limpieza de datos para extraer solo los números en columnas específicas
+        if (index === 0) {
+          // Columna ID: "P1" -> "1"
+          valA = valA.replace("P", "");
+          valB = valB.replace("P", "");
+        } else if (index === 2) {
+          // Columna T. Restante: "5 / 10 u." -> "5"
+          valA = valA.split(" ")[0];
+          valB = valB.split(" ")[0];
+        }
+
+        const numA = parseFloat(valA);
+        const numB = parseFloat(valB);
+
+        // Si la columna contiene números, ordenamos matemáticamente
+        if (!isNaN(numA) && !isNaN(numB)) {
+          return ordenAscendente ? numA - numB : numB - numA;
+        } else {
+          // Si contiene texto (Estado, Usuario), ordenamos alfabéticamente
+          return ordenAscendente
+            ? valA.localeCompare(valB)
+            : valB.localeCompare(valA);
+        }
+      });
+
+      // 5. Volver a inyectar las filas en el DOM (esto las mueve sin destruirlas)
+      filas.forEach((fila) => tbody.appendChild(fila));
+    });
+  });
+}

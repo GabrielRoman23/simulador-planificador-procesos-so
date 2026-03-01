@@ -19,6 +19,7 @@ class Proceso {
         this.vecesEnCPU = 0; // Multiplicador para Múltiples Colas
         this.intentosFallidosDesbloqueo = 0; // Control de inanición
         this.ejecutadoAlgunaVez = false; // Para reporte final: Procesos que nunca entraron en ejecución
+        this.tiempoParaInterrupcion = null; // Control de interrupción
         
         // Elemento DOM asociado
         this.elementoDOM = null;
@@ -49,7 +50,6 @@ class Proceso {
     // Método para simular ejecución en CPU
     ejecutar(tiempo) {
         this.ejecutadoAlgunaVez = true;
-        this.vecesEnCPU++;
         this.tiempoRestante -= tiempo;
         if (this.tiempoRestante <= 0) {
             this.tiempoRestante = 0;
@@ -104,9 +104,9 @@ class Proceso {
         clon.vecesEnCPU = this.vecesEnCPU;
         clon.intentosFallidosDesbloqueo = this.intentosFallidosDesbloqueo;
         clon.ejecutadoAlgunaVez = this.ejecutadoAlgunaVez;
-        
-        // Mantenemos la referencia a la misma fila de la tabla del DOM
+        clon.tiempoParaInterrupcion = this.tiempoParaInterrupcion;
         clon.elementoDOM = this.elementoDOM; 
+        
         return clon;
     }
 }

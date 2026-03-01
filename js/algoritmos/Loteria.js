@@ -3,25 +3,31 @@ class Loteria extends AlgoritmoPlanificacion {
         super("Boletos de Lotería", apropiativo);
     }
 
-    obtenerSiguientes(colaListos, procesoActual) {
+    obtenerSiguiente(colaListos, procesoActual) {
+
         if (colaListos.length === 0) return null;
 
-        // Calcular total de boletos
-        let totalBoletos = 0;
-        colaListos.forEach(p => totalBoletos += p.boletos);
+        if (!this.apropiativo && procesoActual) {
+            return procesoActual;
+        }
 
-        // Elegir boleto ganador
+        let totalBoletos = 0;
+        for (let proceso of colaListos) {
+            totalBoletos += proceso.boletos || 1;  //
+        }
+
+        // Simula el sorteo del boleto ganador (entre 1 y totalBoletos)
         let boletoGanador = Math.floor(Math.random() * totalBoletos) + 1;
 
-        // Buscar el proceso ganador
         let acumulado = 0;
         for (let proceso of colaListos) {
-            acumulado += proceso.boletos;
+            acumulado += proceso.boletos || 1;
+
             if (boletoGanador <= acumulado) {
                 return proceso;
             }
         }
 
-        return colaListos[0];
+        return colaListos[0]; //
     }
 }
