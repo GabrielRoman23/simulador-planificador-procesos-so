@@ -9,7 +9,6 @@ class ParticipacionEquitativa extends AlgoritmoPlanificacion {
     const registroUsuarios = {};
 
     // 1. Calcular el uso HISTÓRICO total sumando el de todos los procesos (incluso si ya terminaron)
-    // Nota: Para esto asumimos que podemos acceder a window.simuladorActual.procesosTotales
     const todosLosProcesos = window.simuladorActual.procesosTotales;
     console.log("Todos los procesos históricos:", todosLosProcesos.length);
 
