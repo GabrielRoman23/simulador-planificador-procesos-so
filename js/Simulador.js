@@ -149,9 +149,19 @@ class Simulador {
 
         this.procesoEnCPU.vecesEnCPU++;
         this.estadisticas.cambiosContexto++;
-        this.quantumActual = this.quantumMaximo;
-        this.log(`Proceso P${this.procesoEnCPU.id} entra al procesador.`);
+        
+        if (this.algoritmo.nombre === "Múltiples Colas de Prioridad" && this.esApropiativo) {
+            // Multiplicamos el quantum inicial por las veces que ha entrado a la CPU
+            this.quantumActual = this.quantumMaximo * this.procesoEnCPU.vecesEnCPU;
+            this.log(`Proceso P${this.procesoEnCPU.id} entra al procesador. Quantum ampliado a ${this.quantumActual} u. (x${this.procesoEnCPU.vecesEnCPU})`);
+        } else {
+            // Comportamiento normal para los demás algoritmos
+            this.quantumActual = this.quantumMaximo;
+            this.log(`Proceso P${this.procesoEnCPU.id} entra al procesador.`);
+        }
+        // ==========================================
       }
+
     }
 
     // 5. Dibujar en el Diagrama de Gantt
