@@ -25,7 +25,7 @@ class Proceso {
         this.elementoDOM = null;
     }
 
-    // Método para manejar el desbloqueo (5 puntos de la rúbrica)
+    // Método para manejar el desbloqueo
     intentarDesbloqueo() {
         if (this.estado !== "Bloqueado") return false;
 
@@ -58,7 +58,7 @@ class Proceso {
     }
 
     crearElementoUI() {
-        const tr = document.createElement("tr"); // Ahora es una fila de tabla
+        const tr = document.createElement("tr"); 
         tr.id = `ui-proceso-${this.id}`;
         
         this.elementoDOM = tr; 

@@ -1,18 +1,17 @@
 /* =========================================
-   1. VARIABLES Y RESETEO BASE
+   1. VARIABLES 
    ========================================= */
 :root {
-    --bg-main: #0f172a; /* Fondo oscuro moderno */
+    --bg-main: #0f172a;
     --bg-panel: #1e293b;
     --text-main: #f8fafc;
     --text-muted: #94a3b8;
     
-    /* Colores semánticos para los estados de los procesos */
-    --color-nuevo: #8b5cf6;     /* Morado */
-    --color-listo: #3b82f6;     /* Azul */
-    --color-cpu: #10b981;       /* Verde Brillante */
-    --color-bloqueado: #ef4444; /* Rojo */
-    --color-terminado: #64748b; /* Gris */
+    --color-nuevo: #8b5cf6;     
+    --color-listo: #3b82f6;     
+    --color-cpu: #10b981;       
+    --color-bloqueado: #ef4444; 
+    --color-terminado: #64748b; 
     --color-inanicion: #991b1b;
     
     --border-radius: 8px;
@@ -108,13 +107,13 @@ button#btn-iniciar:hover {
     height: 40px;
     background-color: #0f172a;
     border-radius: 4px;
-    overflow-x: auto; /* Scroll horizontal si se hace muy largo */
+    overflow-x: auto; 
     margin-top: 10px;
     border: 1px solid #334155;
 }
 
 .gantt-block {
-    flex: 0 0 30px; /* Ancho fijo por cada unidad de tiempo */
+    flex: 0 0 30px; 
     height: 100%;
     display: flex;
     align-items: center;
@@ -177,7 +176,7 @@ th {
 .terminal-log {
     font-family: 'Courier New', Courier, monospace;
     font-size: 0.85rem;
-    color: #10b981; /* Verde terminal */
+    color: #10b981;
     height: 300px;
     overflow-y: auto;
     margin-top: 10px;
@@ -191,7 +190,7 @@ th {
    ========================================= */
 .contenedor-colas {
     display: grid;
-    grid-template-columns: repeat(3, 1fr); /* 3 columnas iguales */
+    grid-template-columns: repeat(3, 1fr); 
     gap: 15px;
 }
 
@@ -230,14 +229,13 @@ th {
 /* =========================================
    5. DISEÑO DEL "PCB" (TARJETA DE PROCESO)
    ========================================= */
-/* Esta clase la crearemos dinámicamente desde JavaScript */
 .proceso-card {
     background-color: #334155;
     border-radius: 6px;
     padding: 10px;
     font-size: 0.9rem;
     border-left: 4px solid transparent;
-    transition: all 0.3s ease; /* Animación suave al cambiar de cola */
+    transition: all 0.3s ease;
     animation: fadeIn 0.4s ease-out;
 }
 
@@ -283,13 +281,11 @@ th {
 
 
 
-
 /* Animación básica de entrada */
 @keyframes fadeIn {
     from { opacity: 0; transform: translateY(-10px); }
     to { opacity: 1; transform: translateY(0); }
 }
-
 
 
 /* =========================================

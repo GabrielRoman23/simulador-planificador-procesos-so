@@ -32,14 +32,13 @@ document.addEventListener("DOMContentLoaded", () => {
     if (window.simuladorActual) {
       window.simuladorActual.pasoAnterior();
       // Desactivamos el botón si ya llegamos al inicio
-      if (window.simuladorActual.historial.length === 0) {
+      if (window.simuladorActual.historial.length === 0)
         btnAnterior.disabled = true;
-      }
     }
   });
 
   btnIniciar.addEventListener("click", () => {
-    // 1. Limpiar la interfaz por si se está corriendo una simulación previa
+    // 1. Limpiar la interfaz de cualquier simulación previa
     limpiarInterfaz();
 
     // Habilitar y configurar botones de control
@@ -56,7 +55,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     let algoritmoSeleccionado;
 
-    // 3. "Fábrica" de Algoritmos: Aquí tus compañeros irán agregando sus clases
     switch (idAlgoritmo) {
       case "rr":
         algoritmoSeleccionado = new RoundRobin(esApropiativo);
@@ -86,7 +84,7 @@ document.addEventListener("DOMContentLoaded", () => {
       clearInterval(window.simuladorActual.intervaloReloj);
     }
 
-    // 5. Instanciar el orquestador y arrancar
+    // 5. Instanciar el Simulador y arrancar
     window.simuladorActual = new Simulador(
       algoritmoSeleccionado,
       esApropiativo,
@@ -126,6 +124,7 @@ function hacerTablaOrdenable() {
 
   headers.forEach((header, index) => {
     header.addEventListener("click", () => {
+      
       // 1. Alternar dirección si es la misma columna, o reiniciar si es nueva
       if (columnaActiva === index) {
         ordenAscendente = !ordenAscendente;
@@ -174,7 +173,7 @@ function hacerTablaOrdenable() {
         }
       });
 
-      // 5. Volver a inyectar las filas en el DOM (esto las mueve sin destruirlas)
+      // 5. Volver a inyectar las filas en el DOM 
       filas.forEach((fila) => tbody.appendChild(fila));
     });
   });

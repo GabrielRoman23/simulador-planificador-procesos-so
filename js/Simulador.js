@@ -39,7 +39,6 @@ class Simulador {
       const p = new Proceso(i);
       this.procesosTotales.push(p);
 
-      // Renderizamos la fila en la tabla del HTML
       const uiFila = p.crearElementoUI();
       document.getElementById("pcb-body").appendChild(uiFila);
 
@@ -51,9 +50,7 @@ class Simulador {
   iniciarSimulacion() {
     this.inicializar();
     this.intervaloReloj = setInterval(() => {
-      if (!this.pausado) {
-        this.cicloDeReloj();
-      }
+      if (!this.pausado) this.cicloDeReloj();
     }, 1000);
   }
 
@@ -61,45 +58,34 @@ class Simulador {
     this.guardarEstado();
     this.reloj++;
 
-    // 1. Procesar Bloqueados
-    // this.procesarBloqueados();
-
-    // 2. Ejecutar CPU
+    // 1. Ejecutar CPU
     if (this.procesoEnCPU) {
       this.procesoEnCPU.ejecutar(1);
       if (this.esApropiativo) this.quantumActual--;
     }
 
-    // 3. Evaluar Cambios de Contexto
+    // 2. Evaluar Cambios de Contexto
     let requiereCambio = false;
 
     if (this.procesoEnCPU) {
-      // A) Primero validamos si el proceso ya terminó naturalmente
+      // A) Primero validamos si el proceso ya terminó
       if (this.procesoEnCPU.estado === "Terminado") {
         this.log(`✅ Proceso P${this.procesoEnCPU.id} ha terminado con éxito.`);
         this.colaTerminados.push(this.procesoEnCPU);
         this.procesoEnCPU = null;
         requiereCambio = true;
       }
-      // B) Si no ha terminado, revisamos si tiene una interrupción programada
-      else if (this.procesoEnCPU.tiempoParaInterrupcion !== null) {
-        // El reloj avanza, restamos 1 al tiempo para la interrupción
-        this.procesoEnCPU.tiempoParaInterrupcion--;
 
-        // Si la bomba de tiempo llega a 0 ¡BOOM! Interrupción (Paso 3 de cicloDeReloj)
-        if (this.procesoEnCPU.tiempoParaInterrupcion <= 0) {
-          this.log(
-            `🛑 ¡INTERRUPCIÓN! P${this.procesoEnCPU.id} se bloquea y es sacado del CPU.`,
-            "alerta-inanicion",
-          );
-          this.procesoEnCPU.estado = "Bloqueado";
-
-          this.colaListos.push(this.procesoEnCPU);
-
-          this.procesoEnCPU.tiempoParaInterrupcion = null;
-          this.procesoEnCPU = null;
-          requiereCambio = true;
-        }
+      // B) Evaluamos un 10% de probabilidad para una interrupción
+      else if (Math.random() < 0.1) {
+        this.log(
+          `🛑 ¡INTERRUPCIÓN! P${this.procesoEnCPU.id} se bloquea y es sacado del CPU.`,
+          "alerta-inanicion",
+        );
+        this.procesoEnCPU.estado = "Bloqueado";
+        this.colaListos.push(this.procesoEnCPU);
+        this.procesoEnCPU = null;
+        requiereCambio = true;
       }
 
       // C) Si no ha terminado y no se interrumpió, revisamos si se le acabó el Quantum (Solo Apropiativo)
@@ -146,7 +132,9 @@ class Simulador {
             break;
           } else if (resultado.estado === "Inanicion")
             this.colaTerminados.push(candidato);
-          else fallaronDesbloqueo.push(candidato);
+          else {
+            fallaronDesbloqueo.push(candidato);
+          }
         } else {
           siguiente = candidato;
           break;
@@ -163,36 +151,6 @@ class Simulador {
         this.estadisticas.cambiosContexto++;
         this.quantumActual = this.quantumMaximo;
         this.log(`Proceso P${this.procesoEnCPU.id} entra al procesador.`);
-
-        // ==========================================
-        // REGLAS DE LA MAESTRA: INTERRUPCIONES
-        // ==========================================
-
-        // 2. Validar si se bloquea o no (20% de probabilidad)
-        const seBloquea = Math.random() < 0.2;
-
-        if (seBloquea) {
-          // Calculamos el límite máximo de tiempo que este proceso pasará en la CPU en este turno
-          let maxTiempo = this.esApropiativo
-            ? Math.min(this.quantumMaximo, this.procesoEnCPU.tiempoRestante)
-            : this.procesoEnCPU.tiempoRestante;
-
-          // 4. Calcular el momento de la interrupción.
-          // (maxTiempo - 1) asegura que la interrupción pase ANTES de que termine su tiempo.
-          let tiempoParaInterrumpir =
-            maxTiempo > 1 ? Math.floor(Math.random() * (maxTiempo - 1)) + 1 : 1;
-
-          this.procesoEnCPU.tiempoParaInterrupcion = tiempoParaInterrumpir;
-
-          this.log(
-            `⚠️ [ALERTA] P${this.procesoEnCPU.id} fallará y se bloqueará en ${this.procesoEnCPU.tiempoParaInterrupcion} u.`,
-            "alerta-inanicion",
-          );
-        } else {
-          // 3. Si no se bloquea, nos aseguramos de que no tenga interrupciones basura de turnos pasados
-          this.procesoEnCPU.tiempoParaInterrupcion = null;
-        }
-        // ==========================================
       }
     }
 
@@ -206,26 +164,6 @@ class Simulador {
     if (this.verificarFinSimulacion()) {
       clearInterval(this.intervaloReloj);
       this.generarReporteFinal();
-    }
-  }
-
-  procesarBloqueados() {
-    for (let i = this.colaBloqueados.length - 1; i >= 0; i--) {
-      const p = this.colaBloqueados[i];
-      const resultado = p.intentarDesbloqueo();
-
-      this.log(
-        resultado.mensaje,
-        resultado.estado === "Inanicion" ? "alerta-inanicion" : "",
-      );
-
-      if (resultado.estado === "Desbloqueado") {
-        this.colaBloqueados.splice(i, 1);
-        this.colaListos.push(p);
-      } else if (resultado.estado === "Inanicion") {
-        this.colaBloqueados.splice(i, 1);
-        this.colaTerminados.push(p);
-      }
     }
   }
 
@@ -277,7 +215,7 @@ class Simulador {
   generarReporteFinal() {
     const finalizados = this.procesosTotales
       .filter((p) => p.estado === "Terminado" || p.estado === "Muerto")
-      .map((p) => (p.estado === "Muerto" ? `${p.id} (Muerto)` : p.id)); 
+      .map((p) => (p.estado === "Muerto" ? `${p.id} (Muerto)` : p.id));
 
     const nuncaEjecutados = this.procesosTotales
       .filter((p) => !p.ejecutadoAlgunaVez)
