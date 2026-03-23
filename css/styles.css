@@ -323,3 +323,323 @@ th {
     cursor: not-allowed;
     opacity: 0.7;
 }
+
+/* =========================================
+   8. SUBSISTEMA DE DISCO (SES-HHDD)
+   ========================================= */
+#panel-disco {
+    background-color: var(--bg-panel);
+    padding: 15px 20px;
+    border-radius: var(--border-radius);
+    border: 1px solid #334155;
+    margin-bottom: 20px;
+}
+
+#disco-info {
+    font-family: monospace;
+    font-size: 0.95rem;
+    margin-bottom: 25px;
+    color: var(--text-muted);
+}
+
+.disco-track-container {
+    position: relative;
+    padding-top: 20px; /* Espacio para la cabeza */
+}
+
+#disco-head {
+    position: absolute;
+    top: -5px;
+    left: 0%;
+    color: var(--color-nuevo);
+    font-size: 1.8rem;
+    text-shadow: 0 0 10px var(--color-nuevo);
+    
+    /* CAMBIO: 1s linear para sincronizar perfecto con el setInterval de 1000ms */
+    transition: left 1s linear; 
+    
+    transform: translateX(-50%); 
+    z-index: 10;
+}
+
+#disco-track {
+    display: flex;
+    height: 35px;
+    background-color: #0f172a;
+    border: 1px solid #475569;
+    border-radius: 4px;
+    position: relative;
+}
+
+.sector {
+    flex: 1;
+    border-right: 1px solid #334155;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    color: #475569;
+    font-weight: bold;
+    transition: all 0.2s;
+}
+
+.sector:last-child {
+    border-right: none;
+}
+
+/* Efecto para el sector que está siendo leído/escrito */
+.sector.activo-lectura {
+    background-color: rgba(16, 185, 129, 0.3); /* Verde translúcido */
+    color: #10b981;
+    box-shadow: inset 0 0 10px #10b981;
+}
+
+.sector.activo-escritura {
+    background-color: rgba(239, 68, 68, 0.3); /* Rojo translúcido */
+    color: #ef4444;
+    box-shadow: inset 0 0 10px #ef4444;
+}
+
+.sector.sector-destino {
+    background-color: rgba(234, 179, 8, 0.3); /* Amarillo translúcido */
+    color: #eab308;
+    box-shadow: inset 0 0 10px #eab308;
+}
+
+/* =========================================
+   9. SCROLLBARS PERSONALIZADOS (UI ELEGANTE)
+   ========================================= */
+
+/* Estilizar el scroll horizontal del Diagrama de Gantt */
+#gantt-timeline::-webkit-scrollbar {
+    height: 8px; /* Altura de la barra horizontal (delgada) */
+}
+
+#gantt-timeline::-webkit-scrollbar-track {
+    background: #0f172a; /* Mismo fondo que el contenedor */
+    border-radius: 0 0 4px 4px;
+}
+
+#gantt-timeline::-webkit-scrollbar-thumb {
+    background: #334155; /* Color sutil para la barra */
+    border-radius: 4px;
+}
+
+#gantt-timeline::-webkit-scrollbar-thumb:hover {
+    background: #475569; /* Brilla un poco al pasar el mouse */
+}
+
+/* Estilizar el scroll vertical de la Consola Terminal para que haga juego */
+.terminal-log::-webkit-scrollbar {
+    width: 8px; /* Ancho de la barra vertical */
+}
+
+.terminal-log::-webkit-scrollbar-track {
+    background: #000; 
+}
+
+.terminal-log::-webkit-scrollbar-thumb {
+    background: #334155; 
+    border-radius: 4px;
+}
+
+.terminal-log::-webkit-scrollbar-thumb:hover {
+    background: #475569; 
+}
+
+/* =========================================
+   10. MODO PROFESIONAL (ROBUSTO Y ESTABLE)
+   ========================================= */
+/* Ajuste de márgenes generales para usar bien la pantalla */
+body { padding: 15px; font-size: 0.95rem; }
+h1 { font-size: 1.2rem; margin-bottom: 5px; }
+h2 { font-size: 1.1rem; margin: 0; }
+h3 { font-size: 1rem; margin-bottom: 8px; padding-bottom: 4px; }
+
+/* Cabecera */
+.compact-header { padding: 12px 20px; margin-bottom: 15px; background-color: var(--bg-panel); border-radius: var(--border-radius); border-left: 5px solid var(--color-nuevo); }
+#panel-configuracion { gap: 12px; margin-top: 5px; display: flex; align-items: center; flex-wrap: wrap; }
+select, button { padding: 6px 10px; font-size: 0.9rem; }
+
+/* Contenedores Base */
+.dashboard-row { display: flex; gap: 15px; margin-bottom: 15px; align-items: stretch; width: 100%; }
+.panel-compacto { background-color: var(--bg-panel); padding: 15px; border-radius: var(--border-radius); border: 1px solid #334155; }
+
+/* Fila 1: Stats y Controles */
+#panel-superior { flex: 1; display: flex; justify-content: space-around; align-items: center; margin: 0; }
+.panel-controles { margin: 0; display: flex; align-items: center; }
+
+/* Fila 2: Gantt y Disco (PROTEGIDOS CONTRA APLASTAMIENTO) */
+.grid-gantt-disco { display: grid; grid-template-columns: 2fr 1fr; gap: 15px; margin-bottom: 15px; }
+#gantt-container, #panel-disco { margin: 0; min-height: 120px; } /* Evita que se encojan */
+#disco-info { margin-bottom: 15px; font-size: 0.85rem; }
+.disco-track-container { padding-top: 15px; }
+#disco-track { height: 35px; } /* Tamaño normal recuperado */
+#disco-head { font-size: 1.8rem; top: -8px; }
+
+/* Fila 3: Kanban y Consola */
+.grid-kanban-consola { display: grid; grid-template-columns: 3fr 1fr; gap: 15px; margin-bottom: 15px; }
+#visualizador-colas, #consola-eventos { margin: 0; }
+
+/* 🔴 EL SECRETO: Kanban de Altura Fija con Scroll Interno */
+.contenedor-colas { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+.panel-estado { 
+    height: 300px; /* Altura estricta para que NUNCA crezcan y rompan el diseño */
+    display: flex; 
+    flex-direction: column; 
+    padding: 10px; 
+}
+.lista-procesos { 
+    flex-grow: 1; 
+    overflow-y: auto; /* Si hay más de 3 procesos, la cajita tendrá su propio scroll */
+    padding-right: 5px; 
+}
+
+/* Consola Terminal alineada a la altura del Kanban */
+.terminal-log { height: 235px; overflow-y: auto; margin-top: 10px; }
+
+/* Fila 4: Tabla PCB Libre (Sin Scroll) */
+#tabla-procesos { width: 100%; display: block; overflow: visible; margin-bottom: 20px;}
+.tabla-scroll { max-height: none; overflow-y: visible; } /* Destruimos el scroll interno de la tabla */
+th, td { padding: 8px 10px; font-size: 0.9rem; }
+
+/* =========================================
+   SCROLLBARS ELEGANTES (Para Kanban y Terminal)
+   ========================================= */
+.lista-procesos::-webkit-scrollbar, .terminal-log::-webkit-scrollbar { width: 6px; }
+.lista-procesos::-webkit-scrollbar-track, .terminal-log::-webkit-scrollbar-track { background: rgba(0,0,0,0.2); border-radius: 4px; }
+.lista-procesos::-webkit-scrollbar-thumb, .terminal-log::-webkit-scrollbar-thumb { background: #475569; border-radius: 4px; }
+.lista-procesos::-webkit-scrollbar-thumb:hover, .terminal-log::-webkit-scrollbar-thumb:hover { background: #64748b; }
+
+/* =========================================
+   11. FIX UI/UX: GANTT SCROLL Y ANTI-DESCUADRE
+   ========================================= */
+
+/* 1. Proteger el Grid: El Gantt tiene permitido colapsar (minmax 0) y el disco está blindado (min-width 380px) */
+.grid-gantt-disco {
+    grid-template-columns: minmax(0, 2fr) minmax(380px, 1fr) !important;
+}
+
+#gantt-container {
+    display: flex;
+    flex-direction: column;
+    min-width: 0; /* CRUCIAL: Obliga al contenedor a no crecer más allá de su grid */
+}
+
+/* 2. Configurar la Línea de Tiempo y su comportamiento fluido */
+#gantt-timeline {
+    display: flex;
+    height: 48px; /* Un poco más alto para que respire */
+    background-color: #0f172a;
+    border-radius: 6px;
+    overflow-x: auto; /* Activa el scroll horizontal */
+    overflow-y: hidden;
+    margin-top: 10px;
+    border: 1px solid #334155;
+    scroll-behavior: smooth; /* Hace que el auto-scroll automático no sea de golpe, sino deslizado */
+}
+
+/* 3. Evitar que los cuadritos se aplasten como acordeón */
+.gantt-block {
+    flex: 0 0 35px !important; /* Ancho fijo estricto de 35px, no crece ni se encoge */
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8rem;
+    font-weight: bold;
+    color: white;
+    border-right: 1px solid rgba(255, 255, 255, 0.08);
+    transition: filter 0.2s; /* Transición suave para el hover */
+}
+
+.gantt-block:hover {
+    filter: brightness(1.3); /* UX: Brilla sutilmente al pasar el mouse por si quieres leer el Tooltip */
+    cursor: help;
+}
+
+/* 4. Scrollbar Personalizado, Elegante y Flotante para el Gantt */
+#gantt-timeline::-webkit-scrollbar {
+    height: 10px; /* Scroll horizontal delgado pero fácil de agarrar */
+}
+
+#gantt-timeline::-webkit-scrollbar-track {
+    background: #0f172a; /* Mismo fondo de la línea de tiempo */
+    border-radius: 0 0 6px 6px;
+}
+
+#gantt-timeline::-webkit-scrollbar-thumb {
+    background: #475569; 
+    border-radius: 10px;
+    border: 2px solid #0f172a; /* Truco UX: Crea un falso "padding" interno que lo hace ver como una píldora flotante */
+}
+
+#gantt-timeline::-webkit-scrollbar-thumb:hover {
+    background: var(--color-nuevo); /* Se ilumina de color morado (tu color principal) cuando el usuario lo va a arrastrar */
+}
+
+
+/* =========================================
+   12. MODAL DE CONFIGURACIÓN
+   ========================================= */
+.modal-overlay {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(3px);
+    display: flex; justify-content: center; align-items: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    background-color: var(--bg-main);
+    border: 1px solid #334155;
+    border-radius: var(--border-radius);
+    width: 90%; max-width: 800px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+    animation: fadeIn 0.3s ease-out;
+}
+
+.modal-header {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 15px 20px;
+    border-bottom: 1px solid #334155;
+    background-color: var(--bg-panel);
+    border-radius: var(--border-radius) var(--border-radius) 0 0;
+}
+
+.btn-close {
+    background: transparent; color: var(--text-muted);
+    border: none; font-size: 1.5rem; cursor: pointer;
+}
+.btn-close:hover { color: #ef4444; }
+
+.modal-body { padding: 20px; }
+
+.grid-ajustes {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px;
+}
+
+.ajuste-grupo {
+    background-color: var(--bg-panel); padding: 15px;
+    border-radius: var(--border-radius); border: 1px solid #334155;
+}
+
+.ajuste-grupo h3 { color: var(--color-nuevo); font-size: 1rem; margin-bottom: 15px; border-bottom: 1px solid #334155; padding-bottom: 5px; }
+
+.ajuste-grupo label { display: block; font-size: 0.85rem; margin-bottom: 10px; color: var(--text-muted); }
+
+.ajuste-grupo input[type="number"] {
+    width: 100%; padding: 6px; margin-top: 5px;
+    background-color: #0f172a; border: 1px solid #475569;
+    color: white; border-radius: 4px;
+}
+
+.rango-inputs { display: flex; gap: 10px; }
+
+.modal-footer {
+    padding: 15px 20px; border-top: 1px solid #334155;
+    background-color: var(--bg-panel); text-align: right;
+    border-radius: 0 0 var(--border-radius) var(--border-radius);
+}
+
+#btn-guardar-config { background-color: var(--color-cpu); color: #000; font-weight: bold; }

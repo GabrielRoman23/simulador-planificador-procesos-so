@@ -10,7 +10,8 @@
 
 <body>
 
-    <header>
+
+    <header class="compact-header">
         <h1>Simulador del Planificador de Procesos</h1>
         <div id="panel-configuracion">
             <label for="tipo-planificacion">Tipo:</label>
@@ -19,83 +20,218 @@
                 <option value="no-apropiativo">No Apropiativo</option>
             </select>
 
-            <label for="algoritmo">Algoritmo:</label>
+            <label for="algoritmo">Algoritmo CPU:</label>
             <select id="algoritmo">
                 <option value="rr">Round Robin</option>
-                <option value="sjf">SJF (Más corto primero)</option>
+                <option value="sjf">SJF</option>
                 <option value="prioridades">Prioridades</option>
-                <option value="loteria">Boletos de Lotería</option>
+                <option value="loteria">Lotería</option>
                 <option value="multiples-colas">Multiples Colas</option>
-                <option value="equitativa">Participación Equitativa</option>
+                <option value="equitativa">Equitativa</option>
+                <option value="garantizada">Garantizada</option>
             </select>
 
-            <button id="btn-iniciar">Iniciar Simulación</button>
+            <label for="algoritmo-disco">Algoritmo Disco:</label>
+            <select id="algoritmo-disco">
+                <option value="sstf">SSTF</option>
+                <option value="scan">SCAN</option>
+                <option value="cscan">C-SCAN</option>
+                <option value="fscan">FSCAN</option>
+            </select>
+
+            <button id="btn-iniciar">Iniciar</button>
+            <button id="btn-settings" style="background-color: #334155; color: white;">⚙️ Configuración</button>
         </div>
     </header>
 
     <main id="simulador-monitor">
-        <div id="panel-superior">
-            <h2>Reloj Global: <span id="reloj">0</span> u.</h2>
-            <h2>Tiempo Máx: <span id="tiempo-maximo">-</span> u.</h2>
-            <h2>Quantum Actual: <span id="quantum-display">-</span></h2>
-        </div>
 
-        <div class="panel-controles">
-            <button id="btn-anterior" disabled>⏮ Paso Anterior</button>
-            <button id="btn-play-pause" disabled>⏸ Pausar</button>
-            <button id="btn-siguiente" disabled>⏭ Siguiente Paso</button>
-        </div>
-
-        <section id="gantt-container">
-            <h3>Línea de Tiempo de Ejecución (CPU)</h3>
-            <div id="gantt-timeline">
+        <div class="dashboard-row">
+            <div id="panel-superior" class="panel-compacto">
+                <h2>Reloj: <span id="reloj">0</span> u.</h2>
+                <h2>Tiempo Máx: <span id="tiempo-maximo">-</span> u.</h2>
+                <h2>Quantum: <span id="quantum-display">-</span></h2>
             </div>
-        </section>
+            <div class="panel-controles panel-compacto">
+                <button id="btn-anterior" disabled>⏮ Anterior</button>
+                <button id="btn-play-pause" disabled>⏸ Pausar</button>
+                <button id="btn-siguiente" disabled>⏭ Siguiente</button>
+                <button id="btn-reiniciar" disabled style="background-color: #ef4444; color: white; margin-left: 20px;">🔄 Reiniciar</button>
+            </div>
+        </div>
 
-        <div class="monitor-grid">
-            <section id="tabla-procesos">
-                <h3>Tabla de Control de Procesos (PCB)</h3>
-                <table id="pcb-table">
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Estado</th>
-                            <th>T. Restante</th>
-                            <th>Prioridad</th>
-                            <th>Boletos</th>
-                            <th>Usuario</th>
-                        </tr>
-                    </thead>
-                    <tbody id="pcb-body">
-                    </tbody>
-                </table>
+        <div class="dashboard-row grid-gantt-disco">
+            <section id="gantt-container" class="panel-compacto">
+                <h3>Línea de Tiempo (CPU)</h3>
+                <div id="gantt-timeline"></div>
             </section>
 
-            <aside id="consola-eventos">
-                <h3>Consola del Sistema</h3>
+            <section id="panel-disco" class="panel-compacto">
+                <h3>Disco (SES-HHDD)</h3>
+                <div id="disco-info">
+                    <span>P: <strong id="disco-proceso-label" style="color: var(--color-cpu)">-</strong></span> |
+                    <span>Alg: <strong id="disco-algo-label">-</strong></span> |
+                    <span>Req: <strong id="disco-peticion-label">-</strong></span>
+                </div>
+                <div class="disco-track-container">
+                    <div id="disco-head">▼</div>
+                    <div id="disco-track"></div>
+                </div>
+            </section>
+        </div>
+
+        <div class="dashboard-row grid-kanban-consola">
+            <section id="visualizador-colas" class="panel-compacto">
+                <h3>Tablero de Estados</h3>
+                <div class="contenedor-colas">
+                    <div class="panel-estado" id="cola-listos">
+                        <h3>🟢 Listos</h3>
+                        <div class="lista-procesos" id="contenedor-listos"></div>
+                    </div>
+                    <div class="panel-estado" id="cpu">
+                        <h3>⚡ En CPU / 💿 Disco</h3>
+                        <div class="lista-procesos" id="contenedor-cpu"></div>
+                    </div>
+                    <div class="panel-estado" id="cola-bloqueados">
+                        <h3>🔴 Bloqueados</h3>
+                        <div class="lista-procesos" id="contenedor-bloqueados"></div>
+                    </div>
+                    <div class="panel-estado" id="cola-terminados">
+                        <h3>✅ Terminados</h3>
+                        <div class="lista-procesos" id="contenedor-terminados"></div>
+                    </div>
+                </div>
+            </section>
+
+            <aside id="consola-eventos" class="panel-compacto">
+                <h3>Terminal</h3>
                 <div id="lista-logs" class="terminal-log">
                     <div>> Sistema inicializado...</div>
                 </div>
             </aside>
         </div>
+
+        <section id="tabla-procesos" class="panel-compacto tabla-scroll">
+            <table id="pcb-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Estado</th>
+                        <th>T. Restante</th>
+                        <th>Prioridad</th>
+                        <th>Boletos</th>
+                        <th>Usuario</th>
+                        <th>Peticiones a HHDD</th>
+                    </tr>
+                </thead>
+                <tbody id="pcb-body"></tbody>
+            </table>
+        </section>
+
     </main>
 
-    <section id="reporte-final" style="display: none;">
+    <section id="reporte-final" class="panel-compacto" style="display: none; margin-top: 10px;">
         <h2>Informe Final de Simulación</h2>
-        <div id="datos-reporte">
-        </div>
+        <div id="datos-reporte"></div>
     </section>
 
-    <script src="js/Proceso.js"></script>
-    <script src="js/Algoritmos/AlgoritmoBase.js"></script>
-    <script src="js/Algoritmos/RoundRobin.js"></script>
-    <script src="js/Algoritmos/ParticipacionEquitativa.js"></script>
-    <script src="js/Algoritmos/AlgoritmoSJF.js"></script>
-    <script src="js/Algoritmos/AlgoritmoPrioridad.js"></script>
+
+    <div id="modal-config" class="modal-overlay" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>⚙️ Parámetros del Simulador</h2>
+                <button id="btn-cerrar-modal" class="btn-close">&times;</button>
+            </div>
+
+            <div class="modal-body grid-ajustes">
+                <div class="ajuste-grupo">
+                    <h3>🖥️ Entorno de Simulación</h3>
+                    <label>Num. Procesos (Min - Max):
+                        <div class="rango-inputs">
+                            <input type="number" id="cfg-proc-min" min="1" max="50">
+                            <input type="number" id="cfg-proc-max" min="1" max="50">
+                        </div>
+                    </label>
+                    <label>Tiempo Simulación (Min - Max u.):
+                        <div class="rango-inputs">
+                            <input type="number" id="cfg-tiempo-min" min="10">
+                            <input type="number" id="cfg-tiempo-max" min="1000">
+                        </div>
+                    </label>
+                    <label>Quantum Apropiativo (Min - Max u.):
+                        <div class="rango-inputs">
+                            <input type="number" id="cfg-quantum-min" min="1">
+                            <input type="number" id="cfg-quantum-max" min="10">
+                        </div>
+                    </label>
+                    <label>Prob. de Interrupción en CPU (%):
+                        <input type="number" id="cfg-prob-interrupcion" min="0" max="100">
+                    </label>
+                </div>
+
+                <div class="ajuste-grupo">
+                    <h3>📦 Propiedades de Procesos</h3>
+                    <label>Tiempo Requerido (Min - Max u.):
+                        <div class="rango-inputs">
+                            <input type="number" id="cfg-tproc-min" min="1">
+                            <input type="number" id="cfg-tproc-max" min="50">
+                        </div>
+                    </label>
+                    <label>Prob. de nacer Bloqueado (%):
+                        <input type="number" id="cfg-prob-bloqueado" min="0" max="100">
+                    </label>
+                    <label>Peticiones HHDD al nacer (Min - Max):
+                        <div class="rango-inputs">
+                            <input type="number" id="cfg-pet-ini-min" min="0">
+                            <input type="number" id="cfg-pet-ini-max" min="10">
+                        </div>
+                    </label>
+                </div>
+
+                <div class="ajuste-grupo">
+                    <h3>💿 Subsistema de Disco</h3>
+                    <label>Prob. Lectura (vs Escritura) (%):
+                        <input type="number" id="cfg-prob-lectura" min="0" max="100">
+                    </label>
+                    <label>Prob. de crear nuevas peticiones (%):
+                        <input type="number" id="cfg-prob-nuevas-pet" min="0" max="100">
+                    </label>
+                    <label>Nuevas Peticiones generadas (Min - Max):
+                        <div class="rango-inputs">
+                            <input type="number" id="cfg-nuevas-pet-min" min="1">
+                            <input type="number" id="cfg-nuevas-pet-max" min="10">
+                        </div>
+                    </label>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button id="btn-guardar-config">Guardar Parámetros</button>
+            </div>
+        </div>
+    </div>
+
+
+    <script src="js/proceso.js"></script>
+    <script src="js/algoritmos/AlgoritmoBase.js"></script>
+    <script src="js/algoritmos/RoundRobin.js"></script>
+    <script src="js/algoritmos/ParticipacionEquitativa.js"></script>
+    <script src="js/algoritmos/AlgoritmoSJF.js"></script>
+    <script src="js/algoritmos/AlgoritmoPrioridad.js"></script>
     <script src="js/algoritmos/Loteria.js"></script>
     <script src="js/algoritmos/MultiplesColas.js"></script>
-    <script src="js/Simulador.js"></script>
-    <script src="js/main.js"></script>
+    <script src="js/algoritmos/PlanificacionGarantizada.js"></script>
+
+    <! -- Algoritmos de Disco -->
+        <script src="js/disco/SESHHDD.js"></script>
+        <script src="js/disco/algoritmos/AlgoritmoDiscoBase.js"></script>
+        <script src="js/disco/algoritmos/SSTF.js"></script>
+        <script src="js/disco/algoritmos/SCAN.js"></script>
+        <script src="js/disco/algoritmos/CSCAN.js"></script>
+        <script src="js/disco/algoritmos/FSCAN.js"></script>
+
+        <script src="js/Simulador.js"></script>
+        <script src="js/main.js"></script>
 </body>
 
 </html>
